@@ -9,6 +9,15 @@ import edu.princeton.cs.algs4.StdOut;
 public class FastCollinearPoints {
     private ArrayList<LineSegment> ls;
 
+    private void add(LinkedList<Point> list,Point p){
+        if (list.size() >= 3) {
+            list.add(p);
+            Collections.sort(list);
+            if (p == list.getFirst()) {
+                ls.add(new LineSegment(p, list.getLast()));
+            }
+        }
+    }
     public FastCollinearPoints(Point[] points) {
         if (points == null) {
             throw new IllegalArgumentException();
@@ -33,25 +42,13 @@ public class FastCollinearPoints {
             double prevslope = Double.NEGATIVE_INFINITY;
             for (int j = 0; j < points.length; j++) {
                 if (j == 0 || points[j].slopeTo(b[i]) != prevslope) {
-                    if (list.size() >= 3) {
-                        list.add(b[i]);
-                        Collections.sort(list);
-                        if (b[i] == list.getFirst()) {
-                            ls.add(new LineSegment(b[i], list.getLast()));
-                        }
-                    }
+                    add(list,b[i]);
                     list.clear();
                 }
                 list.add(points[j]);
                 prevslope = points[j].slopeTo(b[i]);
             }
-            if (list.size() >= 3) {
-                list.add(b[i]);
-                Collections.sort(list);
-                if (b[i] == list.getFirst()) {
-                    ls.add(new LineSegment(b[i], list.getLast()));
-                }
-            }
+            add(list,b[i]);
             list.clear();
         }
 
